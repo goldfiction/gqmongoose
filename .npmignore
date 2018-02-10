@@ -1,0 +1,7 @@
+*.log
+
+.ftpconfig
+
+node_modules
+
+.idea/

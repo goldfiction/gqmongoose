@@ -1,0 +1,81 @@
+{
+  "_args": [
+    [
+      "gqmongoose",
+      "H:\\dev\\workbench"
+    ]
+  ],
+  "_from": "gqmongoose@latest",
+  "_id": "gqmongoose@0.0.4",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/gqmongoose",
+  "_nodeVersion": "4.0.0",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/gqmongoose-0.0.3.tgz_1493140686090_0.39418680337257683"
+  },
+  "_npmUser": {
+    "email": "goldfiction@gmail.com",
+    "name": "goldfiction"
+  },
+  "_npmVersion": "2.14.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "gqmongoose",
+    "raw": "gqmongoose",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/gqmongoose/-/gqmongoose-0.0.3.tgz",
+  "_shasum": "b48b4aa7e0de174daa064a52324ccea1911bd3a9",
+  "_shrinkwrap": null,
+  "_spec": "gqmongoose",
+  "_where": "H:\\dev\\workbench",
+  "dependencies": {
+    "gqdoq": "1.0.1",
+    "lodash": "4.17.4",
+    "mongoose": "5.0.4"
+  },
+  "description": "* gqmongo stands for grant q-mongo * it is a re-write of gmongo using q framework, o-tree * see tests for how to use. it is aimed to make mongo calls very minimum",
+  "devDependencies": {
+    "assert": "1.4.1",
+    "async": "2.1.5",
+    "body-parser": "1.16.1",
+    "express": "3.4.0",
+    "mocha": "2.4.5",
+    "needle": "1.4.5"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "b48b4aa7e0de174daa064a52324ccea1911bd3a9",
+    "tarball": "https://registry.npmjs.org/gqmongoose/-/gqmongoose-0.0.3.tgz"
+  },
+  "gitHead": "62f4b3afe621d26d852b0854898906351a9d9999",
+  "main": "mongo.js",
+  "maintainers": [
+    {
+      "name": "goldfiction",
+      "email": "goldfiction@gmail.com"
+    }
+  ],
+  "name": "gqmongoose",
+  "optionalDependencies": {},
+  "private": false,
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "test": "mocha -t 20000"
+  },
+  "update": {
+    "0.0.4": "fully working",
+    "0.0.3": "mostly working",
+    "0.0.2": "Ground Work in test.js",
+    "0.0.1": "init, imported from gqmongo"
+  },
+  "version": "0.0.3"
+}
