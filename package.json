@@ -72,10 +72,13 @@
     "test": "mocha -t 20000"
   },
   "update": {
+    "0.0.5": "meta info updated",
     "0.0.4": "fully working",
     "0.0.3": "mostly working",
     "0.0.2": "Ground Work in test.js",
     "0.0.1": "init, imported from gqmongo"
   },
-  "version": "0.0.3"
+  "version": "0.0.5",
+  "repository":"ssh://git@github.com/goldfiction/gqmongoose.git",
+  "license":"MIT"
 }
