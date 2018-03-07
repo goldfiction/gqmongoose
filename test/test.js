@@ -1,13 +1,14 @@
-const assert=require("assert");
-const lib=require(__dirname+"/../lib.js");
-const log=lib.tryLog;
-const needle=require('needle');
-const _=require('lodash');
-global.gqmongoose=require('./../mongo.js');
+var assert=require("assert");
+var lib=require(__dirname+"/../lib.js");
+var log=lib.tryLog;
+var needle=require('needle');
+var _=require('lodash');
 var id="";
-
 var rand=Math.floor(Math.random()*10000)
+
 console.log(rand)
+global.gqmongoose=require('./../mongo.js');
+
 global.mongodb={
     host:"mongo",  // change this to localhost if needed
     port:27017,  // default
@@ -55,7 +56,11 @@ describe("testing rest api",function(){
     it("should be able to upsert", function (done) {
         var o=_.cloneDeep(mongodb);
         needle.put(route,o,function(e,r,b){  // get/post/put all allow upsert
-            b=JSON.parse(b+"");
+            //console.log(b)
+            //console.log(e)
+            b=JSON.parse(b)[0];
+            //console.log(b)
+            //console.log(b.name)
             assert(b.name=='abc');
             done(e);
         })
@@ -68,7 +73,7 @@ describe("testing rest api",function(){
         o.read=true;    // o.read allows get operation through get/post/put
         needle.post(route, o,function(e,r,b){
             id=JSON.parse(b+"")[0]["_id"];
-            console.log(id);
+            //console.log(id);
             assert(id);
             done(e);
         });
@@ -89,8 +94,9 @@ describe("testing rest api",function(){
         o.count=true;
         o.key.value=rand+"";
         needle.post(route,o,function(e,r,b){
+            //console.log(b)
             b=JSON.parse(b+"");
-            console.log(b);
+            //console.log(b);
             assert(b==0);
             done(e);
         });
@@ -107,10 +113,10 @@ describe("testing rest api",function(){
 
         needle.put(route,o,function(e,r,b){
             b=JSON.parse(b+"");
-            console.log(b);
+            //console.log(b);
             needle.post(route,o2,function(e,r,b){
                 b=JSON.parse(b+"");
-                console.log(b);
+                //console.log(b);
                 assert(b==1)
                 done(e);
             })
@@ -121,14 +127,15 @@ describe("testing rest api",function(){
         var o=_.cloneDeep(mongodb);
         var o2=_.cloneDeep(mongodb);
 
-        o.key._id=id;
+        o.key={_id:id};
         o.delete=true;  // this make sure data is truly deleted
+        o2.key={_id:id};
         o2.count=true;
 
         needle.delete(route,o,function(e,r,b){
             needle.post(route,o2,function(e,r,b){
                 b=JSON.parse(b+"");
-                console.log(b);
+                //console.log(b);
                 assert(b==0)
                 done(e);
             })

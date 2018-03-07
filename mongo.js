@@ -13,7 +13,7 @@ function toId(id){
     if(id)
         return mongoose.Types.ObjectId(id);
     else
-        return mongoose.Types.ObjectId();
+        return new mongoose.mongo.ObjectId();
 }
 
 exports.mongoose=mongoose;
@@ -21,7 +21,7 @@ exports.objectId=objectId;
 exports.schema=schema;
 exports.objectIdType=objectIdType;
 global.objectIdType=objectIdType;
-global.toId=toId
+global.toId=toId;
 
 function parseId(o){
     o=o||{};
@@ -29,10 +29,19 @@ function parseId(o){
     o.data= o.data||{};
     o.option= o.option||{};
     o.collection= o.collection||"test";
-    if(typeof o.key._id=="string")
-        o.key._id=toId(o.key._id);
-    if(typeof o.data._id=="string")
-        o.data._id=toId(o.data._id);
+    //console.log(o)
+    if(o.key._id) {
+        if (typeof o.key._id == "string")
+            o.key._id = toId(o.key._id);
+    }else{
+        delete o.key._id
+    }
+    if(o.data._id) {
+        if (typeof o.data._id == "string")
+            o.data._id = toId(o.data._id);
+    }else{
+        delete o.data._id
+    }
     return o
 }
 
@@ -51,18 +60,17 @@ function connect(o,cb) {
     }
     o.database= o.database||"test";
     o.connectionString='mongodb://' + o.host+':'+ o.port+'/'+ o.database;
-    console.log(o.connectionString);
+    //console.log(o.connectionString);
     mongoose.connect(o.connectionString,o.auth);
     db = mongoose.connection;
     db.on('error', function(e){
-        console.error.bind(console, 'connection error:')
-        console.log(e)
+        console.error.bind(console, 'connection error:');
+        console.log(e);
         cb(e);
     });
-    db.once('open', function() {
-        o.db=db;
-        cb(null,o)
-    });
+    console.log("Mongo connection established")
+    o.db=db;
+    cb(null,o)
 }
 exports.connect=connect;
 
@@ -85,9 +93,11 @@ function model(o,cb){
     try {
         models= models||{};
         o.collection= o.collection||"test";
+        o.schema=new schema(o.schema);
         models[o.collection]=mongoose.model(o.collection, o.schema);
         cb(null, o);
     }catch(e){
+        console.log(e);
         cb(e);
     }
 }
@@ -101,14 +111,14 @@ exports.model=model;
 //  output:
 //    o.result
 function count(o,cb){
-    tryConnect(o,function(e,o2) {
+    tryConnect(o,function(e) {
         if(e) {
-            console.log(e)
+            console.log(e);
             cb(e, o);
         }else {
-            models[o.collection].count(o.key, function (e, r) {
+            mongoose.model(o.collection).count(o.key, function (e, r) {
                 if (e)
-                    console.log(e)
+                    console.log(e);
                 o.result = r;
                 cb(e, o);
             });
@@ -132,7 +142,16 @@ exports.count=q_count;
 //    o.result
 function read(o,cb){
     tryConnect(o,function(e,o){
-        models[o.collection].find(o.key, o.option, function(e,r){
+        o.key=lib.cleanProto(o.key);
+        //console.log(o.key)
+        mongoose.model(o.collection).find(o.key, o.option, function(e,r){
+            if(r) {
+                for (var i in r) {
+                    try{
+                        r[i]=r[i].toObject();
+                    }catch(e){}
+                }
+            }
             o.result=r;
             cb(e,o);
         });
@@ -169,26 +188,37 @@ function upsert(o,cb){
         }
         else {
             o.data.updateTime = Date.now();
-            models[o.collection].findOne(o.key, o.option,function(e,doc){
-                if(e)
-                    cb(e)
+            ///console.log(o.key)
+            mongoose.model(o.collection).findOne(o.key, o.option,function(e,docs) {
+                //console.log(docs)
+                if (e) {
+                    cb(e);
+                }
                 else{
-                    if(doc){
-                        for(var i in o.data){
-                            doc[i]= o.data[i];
-                        }
-                        doc.save(function(e,r){
-                            o.result=doc;
+                    if(docs && docs.doc){
+                        //console.log("update!");
+                        //console.log(o.data);
+                        var doc=docs.toObject();
+                        delete doc._id;
+                        doc = _.extend(doc, o.data);
+                        mongoose.model(o.collection).update(o.key,doc,{upsert: true},function(e){
+                            o.result=[doc];
                             cb(e,o);
                         })
                     }else{
-                        console.log(o.data)
-                        var item=new models[o.collection](o.data)
+                        //console.log("create!")
+                        //console.log(o.data);
+                        var myModel=mongoose.model(o.collection);
+                        var item=new myModel(o.data);
+                        //item= _.extend(item, o.data);
+                        //var itemObj= _.cloneDeep(item)
+                        //console.log(item);
                         item.save(function(e,r){
-                            console.log(e)
-                            console.log(r)
+                            //console.log(e);
+                            //console.log(r);
                             o.result=r;
-                            cb(e,o)
+                            //console.log(typeof o.result)
+                            cb(e,o);
                         })
                     }
                 }
@@ -222,7 +252,7 @@ function remove(o,cb){
                 console.log(e);
             o.result=r;
             cb(e,o);
-        })
+        });
     }
 }
 
@@ -244,8 +274,8 @@ function del(o,cb){
     o=parseId(o);
     o.key=lib.cleanProto(o.key);
     tryConnect(o,function(e,o) {
-        console.log(o.key)
-        models[o.collection].remove(o.key, function (e) {
+        //console.log(o.key);
+        mongoose.model(o.collection).remove(o.key, function (e) {
             o.result="OK";
             cb(e,o);
         });
@@ -288,7 +318,7 @@ function requestHandler(req,res){
 
     if(method=="get"||method=="post"||method=="put"){
         upsert(o,cb);
-    } else if (method==="delete"){
+    } else if (method=="delete"){
         remove(o,cb);
     }
 }
