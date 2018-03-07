@@ -187,7 +187,9 @@ function upsert(o,cb){
             read(o,cb);
         }
         else {
-            o.data.updateTime = Date.now();
+            if(!o.noTimeTracking){
+                o.data.updateTime = Date.now();
+            }
             ///console.log(o.key)
             mongoose.model(o.collection).findOne(o.key, o.option,function(e,docs) {
                 //console.log(docs)
