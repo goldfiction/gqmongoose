@@ -44,6 +44,9 @@
   },
   "description": "* gqmongo stands for grant q-mongo * it is a re-write of gmongo using q framework, o-tree * see tests for how to use. it is aimed to make mongo calls very minimum",
   "devDependencies": {
+    "gqdoq": "1.0.1",
+    "lodash":"1.0.0",
+    "mongoose": "1.0.0",
     "assert": "1.4.1",
     "async": "2.1.5",
     "body-parser": "1.16.1",
@@ -72,6 +75,7 @@
     "test": "npm install \n mocha -t 20000"
   },
   "update": {
+    "1.0.3": "fixed one failed test case",
     "1.0.2": "added no time tracking feature to allow db without timestamps",
     "1.0.1": "refactored to work with mongoose 1.0.0 and mongodb in docker mongo:3.2-jessie",
     "0.0.6": "fixed delete case fail in test",
@@ -81,7 +85,7 @@
     "0.0.2": "Ground Work in test.js",
     "0.0.1": "init, imported from gqmongo"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository":"ssh://git@github.com/goldfiction/gqmongoose.git",
   "license":"MIT"
 }

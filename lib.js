@@ -57,3 +57,20 @@ function cleanProto(obj){
 }
 
 exports.cleanProto=cleanProto;
+
+function cleanEval(obj){
+    for(var i in obj){
+        if(typeof obj[i]=='string') {
+            try {
+                obj[i] = eval(obj[i]);
+            } catch (e) {
+            }
+        }else if (typeof obj[i]=='object'){
+            obj[i]=cleanEval(obj[i]);
+        }else{
+        }
+    }
+    return obj;
+}
+
+exports.cleanEval=cleanEval;

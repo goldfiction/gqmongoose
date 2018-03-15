@@ -10,7 +10,7 @@ console.log(rand)
 global.gqmongoose=require('./../mongo.js');
 
 global.mongodb={
-    host:"mongo",  // change this to localhost if needed
+    host:"localhost",  // change this to localhost if needed
     port:27017,  // default
     database:"test",  // default
     collection:"test",
@@ -49,7 +49,7 @@ describe("testing rest api",function(){
             var result= b+"";
             console.log(result);
             assert(result,"welcome!");  // make sure the test server is online
-            done(e);
+            setTimeout(function(){done(e)},200);
         });
     });
 
@@ -62,7 +62,7 @@ describe("testing rest api",function(){
             //console.log(b)
             //console.log(b.name)
             assert(b.name=='abc');
-            done(e);
+            setTimeout(function(){done(e)},200);
         })
     });
 
@@ -72,10 +72,12 @@ describe("testing rest api",function(){
         o.key.value=rand+"";
         o.read=true;    // o.read allows get operation through get/post/put
         needle.post(route, o,function(e,r,b){
+            //console.log(e)
+            //console.log(b)
             id=JSON.parse(b+"")[0]["_id"];
             //console.log(id);
             assert(id);
-            done(e);
+            setTimeout(function(){done(e)},200);
         });
     });
 
@@ -85,7 +87,7 @@ describe("testing rest api",function(){
         o.delete=false;        // By default, only sets enabled to false, data is left in db
         needle.delete(route,o,function(e,r,b){
             b=JSON.parse(b+"");
-            done(e);
+            setTimeout(function(){done(e)},200);
         });
     });
 
@@ -98,7 +100,7 @@ describe("testing rest api",function(){
             b=JSON.parse(b+"");
             //console.log(b);
             assert(b==0);
-            done(e);
+            setTimeout(function(){done(e)},200);
         });
     });
 
@@ -118,7 +120,7 @@ describe("testing rest api",function(){
                 b=JSON.parse(b+"");
                 //console.log(b);
                 assert(b==1)
-                done(e);
+                setTimeout(function(){done(e)},200);
             })
         });
     });
@@ -137,7 +139,7 @@ describe("testing rest api",function(){
                 b=JSON.parse(b+"");
                 //console.log(b);
                 assert(b==0)
-                done(e);
+                setTimeout(function(){done(e)},200);
             })
         });
 

@@ -143,8 +143,11 @@ exports.count=q_count;
 function read(o,cb){
     tryConnect(o,function(e,o){
         o.key=lib.cleanProto(o.key);
-        //console.log(o.key)
+        o.key=lib.cleanEval(o.key);
+        console.log(o.key)
         mongoose.model(o.collection).find(o.key, o.option, function(e,r){
+            console.log(e)
+            console.log(r)
             if(r) {
                 for (var i in r) {
                     try{
