@@ -1,3 +1,4 @@
 .idea/
 .ftpconfig_default
 node_modules/
+*.log

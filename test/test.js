@@ -10,7 +10,7 @@ console.log(rand)
 global.gqmongoose=require('./../mongo.js');
 
 global.mongodb={
-    host:"localhost",  // change this to localhost if needed
+    host:"mongo",  // change this to localhost if needed
     port:27017,  // default
     database:"test",  // default
     collection:"test",
@@ -44,6 +44,10 @@ describe("testing rest api",function(){
         });
     });
 
+    after(function(done){
+	process.exit(0);
+    });
+
     it("should be able to run with express", function (done) {
         needle.get("http://localhost:10080/", function (e,r,b) {
             var result= b+"";
@@ -55,9 +59,11 @@ describe("testing rest api",function(){
 
     it("should be able to upsert", function (done) {
         var o=_.cloneDeep(mongodb);
+	o.key.value=rand;
         needle.put(route,o,function(e,r,b){  // get/post/put all allow upsert
-            //console.log(b)
-            //console.log(e)
+            // console.log(b)
+            // console.log(e)
+            // console.log("upsert b:")
             b=JSON.parse(b)[0];
             //console.log(b)
             //console.log(b.name)
@@ -69,13 +75,16 @@ describe("testing rest api",function(){
 
     it("should be able to get", function (done) {
         var o=_.cloneDeep(mongodb);
-        o.key.value=rand+"";
+        o.key.value=rand;
         o.read=true;    // o.read allows get operation through get/post/put
-        needle.post(route, o,function(e,r,b){
-            //console.log(e)
-            //console.log(b)
+        // console.log(o)
+        needle.post(route,o,function(e,r,b){
+            // console.log(e)
+            // console.log(r)
+            // console.log("get b:")
+            // console.log(b)
             id=JSON.parse(b+"")[0]["_id"];
-            //console.log(id);
+            console.log("id:"+id);
             assert(id);
             setTimeout(function(){done(e)},200);
         });
@@ -86,7 +95,8 @@ describe("testing rest api",function(){
         o.key._id=id;
         o.delete=false;        // By default, only sets enabled to false, data is left in db
         needle.delete(route,o,function(e,r,b){
-            b=JSON.parse(b+"");
+            b=JSON.parse(b);
+            // console.log(b)
             setTimeout(function(){done(e)},200);
         });
     });
@@ -94,10 +104,10 @@ describe("testing rest api",function(){
     it("should be able to count",function(done){
         var o= _.cloneDeep(mongodb);
         o.count=true;
-        o.key.value=rand+"";
+        o.key.value=rand;
         needle.post(route,o,function(e,r,b){
             //console.log(b)
-            b=JSON.parse(b+"");
+            b=JSON.parse(b);
             //console.log(b);
             assert(b==0);
             setTimeout(function(){done(e)},200);
@@ -113,11 +123,13 @@ describe("testing rest api",function(){
         o.data.enabled=true;
         o2.count=true;
 
-        needle.put(route,o,function(e,r,b){
-            b=JSON.parse(b+"");
-            //console.log(b);
+        // console.log(o)
+	// console.log(o2)
+	needle.put(route,o,function(e,r,b){
+            b=JSON.parse(b);
+            // console.log(b);
             needle.post(route,o2,function(e,r,b){
-                b=JSON.parse(b+"");
+                b=JSON.parse(b);
                 //console.log(b);
                 assert(b==1)
                 setTimeout(function(){done(e)},200);
@@ -126,8 +138,8 @@ describe("testing rest api",function(){
     });
 
     it("should be able to delete",function(done){
-        var o=_.cloneDeep(mongodb);
-        var o2=_.cloneDeep(mongodb);
+        var o=_.cloneDeep(mongodb);  // what to delete
+        var o2=_.cloneDeep(mongodb); // check if deleted by counting
 
         o.key={_id:id};
         o.delete=true;  // this make sure data is truly deleted
@@ -136,7 +148,7 @@ describe("testing rest api",function(){
 
         needle.delete(route,o,function(e,r,b){
             needle.post(route,o2,function(e,r,b){
-                b=JSON.parse(b+"");
+                b=JSON.parse(b);
                 //console.log(b);
                 assert(b==0)
                 setTimeout(function(){done(e)},200);

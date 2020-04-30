@@ -52,7 +52,14 @@ exports.doQ = doQ;
 function cleanProto(obj){
     try{
         delete obj['__proto__']
-    }catch(e){}
+    }catch(e){
+   	console.log(e)
+    }
+    //try{
+    //	obj=JSON.parse(JSON.stringify(obj));
+    //}catch(e){
+    //    console.log(e)
+    //}
     return obj;
 }
 
@@ -60,10 +67,12 @@ exports.cleanProto=cleanProto;
 
 function cleanEval(obj){
     for(var i in obj){
+	// console.log(typeof obj[i])
         if(typeof obj[i]=='string') {
             try {
                 obj[i] = eval(obj[i]);
             } catch (e) {
+                // console.log(e)
             }
         }else if (typeof obj[i]=='object'){
             obj[i]=cleanEval(obj[i]);

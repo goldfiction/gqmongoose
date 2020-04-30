@@ -6,20 +6,20 @@
     ]
   ],
   "_from": "gqmongoose@latest",
-  "_id": "gqmongoose@0.0.4",
+  "_id": "gqmongoose@1.0.3",
   "_inCache": true,
   "_installable": true,
   "_location": "/gqmongoose",
   "_nodeVersion": "4.0.0",
   "_npmOperationalInternal": {
-    "host": "packages-18-east.internal.npmjs.com",
-    "tmp": "tmp/gqmongoose-0.0.3.tgz_1493140686090_0.39418680337257683"
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/gqmongoose_1.0.3_1521090982028_0.2869624091147618"
   },
   "_npmUser": {
-    "email": "goldfiction@gmail.com",
-    "name": "goldfiction"
+    "name": "goldfiction",
+    "email": "goldfiction@gmail.com"
   },
-  "_npmVersion": "2.14.2",
+  "_npmVersion": "1.4.14",
   "_phantomChildren": {},
   "_requested": {
     "name": "gqmongoose",
@@ -32,32 +32,33 @@
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "https://registry.npmjs.org/gqmongoose/-/gqmongoose-0.0.3.tgz",
-  "_shasum": "b48b4aa7e0de174daa064a52324ccea1911bd3a9",
+  "_resolved": "https://registry.npmjs.org/gqmongoose/-/gqmongoose-1.0.3.tgz",
+  "_shasum": "fda1246ca7a28c94f6fa3cd3b0dd0e96b0e98407",
   "_shrinkwrap": null,
   "_spec": "gqmongoose",
   "_where": "H:\\dev\\workbench",
   "dependencies": {
     "gqdoq": "1.0.1",
-    "lodash":"1.0.0",
-    "mongoose": "1.0.0"
+    "lodash": "1.0.0"
   },
   "description": "* gqmongo stands for grant q-mongo * it is a re-write of gmongo using q framework, o-tree * see tests for how to use. it is aimed to make mongo calls very minimum",
   "devDependencies": {
-    "gqdoq": "1.0.1",
-    "lodash":"1.0.0",
-    "mongoose": "1.0.0",
     "assert": "1.4.1",
     "async": "2.1.5",
     "body-parser": "1.16.1",
     "express": "3.4.0",
+    "gqdoq": "1.0.1",
+    "lodash": "1.0.0",
     "mocha": "2.4.5",
+    "mongoose": "5.9.10",
     "needle": "1.4.5"
   },
   "directories": {},
   "dist": {
-    "shasum": "b48b4aa7e0de174daa064a52324ccea1911bd3a9",
-    "tarball": "https://registry.npmjs.org/gqmongoose/-/gqmongoose-0.0.3.tgz"
+    "shasum": "fda1246ca7a28c94f6fa3cd3b0dd0e96b0e98407",
+    "tarball": "https://registry.npmjs.org/gqmongoose/-/gqmongoose-1.0.3.tgz",
+    "fileCount": 8,
+    "unpackedSize": 17773
   },
   "gitHead": "62f4b3afe621d26d852b0854898906351a9d9999",
   "main": "mongo.js",
@@ -70,11 +71,11 @@
   "name": "gqmongoose",
   "optionalDependencies": {},
   "private": false,
-  "readme": "ERROR: No README data found!",
   "scripts": {
-    "test": "npm install \n mocha -t 20000"
+    "test": "mocha -t 120000 > test.log && echo please less test.log"
   },
   "update": {
+    "1.0.4": "updated mongoose to newest version, fixed dos2unix formatting",
     "1.0.3": "fixed one failed test case",
     "1.0.2": "added no time tracking feature to allow db without timestamps",
     "1.0.1": "refactored to work with mongoose 1.0.0 and mongodb in docker mongo:3.2-jessie",
@@ -85,7 +86,14 @@
     "0.0.2": "Ground Work in test.js",
     "0.0.1": "init, imported from gqmongo"
   },
-  "version": "1.0.3",
-  "repository":"ssh://git@github.com/goldfiction/gqmongoose.git",
-  "license":"MIT"
+  "version": "1.0.4",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/goldfiction/gqmongoose.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/goldfiction/gqmongoose/issues"
+  },
+  "homepage": "https://github.com/goldfiction/gqmongoose"
 }

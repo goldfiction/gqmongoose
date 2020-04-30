@@ -142,20 +142,26 @@ exports.count=q_count;
 //    o.result
 function read(o,cb){
     tryConnect(o,function(e,o){
+	if(e){console.log(e)}
         o.key=lib.cleanProto(o.key);
         o.key=lib.cleanEval(o.key);
-        console.log(o.key)
-        mongoose.model(o.collection).find(o.key, o.option, function(e,r){
-            console.log(e)
-            console.log(r)
+	mongoose.model(o.collection).find(o.key,o.option,function(e,r){
+            // console.log("read e:")
+            // console.log(e)
+            // console.log("read r:")
+            // console.log(r)
             if(r) {
                 for (var i in r) {
                     try{
                         r[i]=r[i].toObject();
+                        // console.log(r[i]);
                     }catch(e){}
                 }
+		o.result=r;
             }
-            o.result=r;
+            else{
+		o.result=[];
+	    }
             cb(e,o);
         });
     });
@@ -180,7 +186,9 @@ function upsert(o,cb){
     //console.log(o);
     tryConnect(o,function(e,o) {
         o.key=lib.cleanProto(o.key);
+	o.key=lib.cleanEval(o.data);
         o.data=lib.cleanProto(o.data);
+	o.data=lib.cleanEval(o.data);
         if(o.count)
         {
             count(o,cb);
@@ -195,34 +203,36 @@ function upsert(o,cb){
             }
             ///console.log(o.key)
             mongoose.model(o.collection).findOne(o.key, o.option,function(e,docs) {
-                //console.log(docs)
+                // console.log(docs)
                 if (e) {
                     cb(e);
                 }
                 else{
                     if(docs && docs.doc){
-                        //console.log("update!");
-                        //console.log(o.data);
+                        // console.log("update!");
+                        // console.log(o.data);
                         var doc=docs.toObject();
                         delete doc._id;
                         doc = _.extend(doc, o.data);
                         mongoose.model(o.collection).update(o.key,doc,{upsert: true},function(e){
                             o.result=[doc];
+			    // console.log(o.result)
                             cb(e,o);
                         })
                     }else{
-                        //console.log("create!")
-                        //console.log(o.data);
+                        // console.log("create!")
+                        // console.log(o.data);
                         var myModel=mongoose.model(o.collection);
                         var item=new myModel(o.data);
                         //item= _.extend(item, o.data);
                         //var itemObj= _.cloneDeep(item)
                         //console.log(item);
                         item.save(function(e,r){
-                            //console.log(e);
-                            //console.log(r);
+                            // console.log(e);
+                            // console.log(r);
                             o.result=r;
-                            //console.log(typeof o.result)
+			    // console.log(o.result)
+                            // console.log(typeof o.result)
                             cb(e,o);
                         })
                     }
@@ -252,9 +262,11 @@ function remove(o,cb){
         o.data=lib.cleanProto(o.data);
         o.key.enabled = true;
         o.data.enabled = false;
+	console.log(o)
         models[o.collection].findOneAndUpdate(o.key, o.data, o.option,function(e,r){
-            if(e)
+            if(e){
                 console.log(e);
+	    }
             o.result=r;
             cb(e,o);
         });

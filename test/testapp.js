@@ -15,7 +15,8 @@ app.get("/",function(req,res){
 });
 
 app.all("/api/db", gqmongoose.requestHandler);
-app.listen(port, function () {
+global.expressserver=app.listen(port, function () {
     console.log("server is running @" + port);
 });
+
 
