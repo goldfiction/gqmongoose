@@ -6,6 +6,18 @@ var _=require('lodash');
 var id="";
 var rand=Math.floor(Math.random()*10000)
 
+
+// do this for your new mongo db if you have auth issue
+//var schema = db.system.version.findOne({"_id" : "authSchema"})
+//schema.currentVersion = 3
+//db.system.version.save(schema)
+
+// do this to create user
+//db.createUser({user: "user",pwd: "user",roles: [ { role: "userAdminAnyDatabase", db: "admin" } ],passwordDigestor:"server"})
+
+// do this to add db to user if you have trouble read/write to db
+//db.grantRolesToUser("user",[{ role: "readWrite", db: "test" }])
+
 console.log(rand)
 global.gqmongoose=require('./../mongo.js');
 
