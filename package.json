@@ -75,6 +75,7 @@
     "test": "mocha -t 120000 > test.log && echo please less test.log"
   },
   "update": {
+    "1.0.5": "updated dependency version, fixed bugs associated with version change",
     "1.0.4": "updated mongoose to newest version, fixed dos2unix formatting",
     "1.0.3": "fixed one failed test case",
     "1.0.2": "added no time tracking feature to allow db without timestamps",
@@ -86,7 +87,7 @@
     "0.0.2": "Ground Work in test.js",
     "0.0.1": "init, imported from gqmongo"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/goldfiction/gqmongoose.git"
