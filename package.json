@@ -38,19 +38,19 @@
   "_spec": "gqmongoose",
   "_where": "H:\\dev\\workbench",
   "dependencies": {
-    "gqdoq": "1.0.1",
-    "lodash": "1.0.0"
+    "gqdoq": "1.0.1"
   },
   "description": "* gqmongo stands for grant q-mongo * it is a re-write of gmongo using q framework, o-tree * see tests for how to use. it is aimed to make mongo calls very minimum",
   "devDependencies": {
     "assert": "1.4.1",
     "async": "2.1.5",
-    "body-parser": "1.16.1",
-    "express": "3.4.0",
+    "body-parser": "^1.19.0",
+    "method-override":"",
+    "express": "^4.17.1",
     "gqdoq": "1.0.1",
-    "lodash": "1.0.0",
-    "mocha": "2.4.5",
-    "mongoose": "5.9.10",
+    "lodash": "^4.17.19",
+    "mocha": "^8.1.1",
+    "mongoose": "^5.9.27",
     "needle": "1.4.5"
   },
   "directories": {},

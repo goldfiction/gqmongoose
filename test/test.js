@@ -11,7 +11,9 @@ global.gqmongoose=require('./../mongo.js');
 
 global.mongodb={
     host:"mongo",  // change this to localhost if needed
-    port:27017,  // default
+    port:"27017",  // default
+    user:"user",
+    pass:"user",
     database:"test",  // default
     collection:"test",
     route:"http://localhost:10080/api/db",  // default
@@ -40,12 +42,14 @@ describe("testing rest api",function(){
     before(function(done){
         require('./testapp.js');
         gqmongoose.model(_.cloneDeep(mongodb),function(e) {
-            setTimeout(function(){done(e)},200);
+           // setTimeout(function(){done(e)},200);
+           done();
         });
     });
 
     after(function(done){
-	process.exit(0);
+	    process.exit(0);
+	    done();
     });
 
     it("should be able to run with express", function (done) {
@@ -61,10 +65,10 @@ describe("testing rest api",function(){
         var o=_.cloneDeep(mongodb);
 	o.key.value=rand;
         needle.put(route,o,function(e,r,b){  // get/post/put all allow upsert
-            // console.log(b)
-            // console.log(e)
+            //console.log(b)
+            //console.log(e)
             // console.log("upsert b:")
-            b=JSON.parse(b)[0];
+            b=JSON.parse(b);
             //console.log(b)
             //console.log(b.name)
             assert(b.name=='abc');
@@ -127,7 +131,8 @@ describe("testing rest api",function(){
 	// console.log(o2)
 	needle.put(route,o,function(e,r,b){
             b=JSON.parse(b);
-            // console.log(b);
+             //console.log(b);
+             id=b._id;  // apparently new upsert creates new _id
             needle.post(route,o2,function(e,r,b){
                 b=JSON.parse(b);
                 //console.log(b);
@@ -143,16 +148,28 @@ describe("testing rest api",function(){
 
         o.key={_id:id};
         o.delete=true;  // this make sure data is truly deleted
-        o2.key={_id:id};
+        o2.key.value=rand;
         o2.count=true;
 
         needle.delete(route,o,function(e,r,b){
+            if(e){
+                console.log(e);
+            }
+            //console.log(b);
+            b=JSON.parse(b);
+            assert(b=="OK");
+            setTimeout(function(){
             needle.post(route,o2,function(e,r,b){
+                if(e){
+                    console.log(e);
+                }
+                //console.log(b);
                 b=JSON.parse(b);
                 //console.log(b);
                 assert(b==0)
                 setTimeout(function(){done(e)},200);
             })
+            },100);
         });
 
     })

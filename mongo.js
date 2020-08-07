@@ -54,23 +54,39 @@ function parseId(o){
 function connect(o,cb) {
     o.host= o.host||"localhost";
     o.port= o.port||"27017";
-    o.auth={};
-    if(o.user) {
-        o.auth={user:o.user,pass:o.pass,auth:{authdb:"admin"}}
+    o.authString="";
+    
+    o.option={
+        //db: { native_parser: true },
+        //server: { poolSize: 5 },
+        //promiseLibrary: global.Promise,
+        //useFindAndModify:false,
+        useNewUrlParser:true,
+        useUnifiedTopology:true
+    };
+    if(o.user){ 
+        //o.option.user=o.user+"";
+        //o.option.pass=o.pass+"";
+        //o.option.authenticationDatabase="admin";
+        //o.option.auth={authdb:"admin"};
+        o.authString=o.user+":"+o.pass+"@";
     }
     o.database= o.database||"test";
-    o.connectionString='mongodb://' + o.host+':'+ o.port+'/'+ o.database;
-    //console.log(o.connectionString);
-    mongoose.connect(o.connectionString,o.auth);
+    o.connectionString='mongodb://'+o.authString + o.host+':'+ o.port+'/'+ o.database+"?authSource=admin";
+    // console.log(o.connectionString);
+    mongoose.connect(o.connectionString,o.option);
     db = mongoose.connection;
-    db.on('error', function(e){
-        console.error.bind(console, 'connection error:');
+    db.on('error',function(e){
+        console.log("Mongo connection failed.")
+        //console.error.bind(console, 'connection error:');
         console.log(e);
-        cb(e);
+        cb(e,o);
     });
-    console.log("Mongo connection established")
-    o.db=db;
-    cb(null,o)
+    //db.on('open',function(){
+        console.log("Mongo connection established.")
+        o.db=db;
+        cb(null,o)
+    //});
 }
 exports.connect=connect;
 
@@ -116,9 +132,14 @@ function count(o,cb){
             console.log(e);
             cb(e, o);
         }else {
-            mongoose.model(o.collection).count(o.key, function (e, r) {
+            o=parseId(o);
+            o.key=lib.cleanProto(o.key);
+            //console.log("counting this:")
+            //console.log(o.key)
+            mongoose.model(o.collection).countDocuments(o.key, function (e, r) {
                 if (e)
                     console.log(e);
+                //console.log(r);
                 o.result = r;
                 cb(e, o);
             });
@@ -189,6 +210,12 @@ function upsert(o,cb){
 	o.key=lib.cleanEval(o.data);
         o.data=lib.cleanProto(o.data);
 	o.data=lib.cleanEval(o.data);
+	try{
+	    o.count=JSON.parse(o.count);
+	}catch(e){}
+	try{
+	    o.read=JSON.parse(o.read);
+	}catch(e){}
         if(o.count)
         {
             count(o,cb);
@@ -253,16 +280,22 @@ exports.upsert=q_upsert;
 // save as upsert
 // should use _id for exact remove
 function remove(o,cb){
+    try{
+    o.delete=JSON.parse(o.delete);
+    }catch(e){}
+    //console.log(typeof o.delete)
     if(o.delete)
     {
         del(o,cb);
     }
     else {
+        //console.log("preserving remove!")
         o.key=lib.cleanProto(o.key);
         o.data=lib.cleanProto(o.data);
         o.key.enabled = true;
         o.data.enabled = false;
-	console.log(o)
+        o.option.useFindAndModify=false;
+	//console.log(o)
         models[o.collection].findOneAndUpdate(o.key, o.data, o.option,function(e,r){
             if(e){
                 console.log(e);
@@ -288,11 +321,13 @@ exports.remove=q_remove;
 //  output:
 //    o.result
 function del(o,cb){
+    //console.log("true delete!")
     o=parseId(o);
     o.key=lib.cleanProto(o.key);
     tryConnect(o,function(e,o) {
         //console.log(o.key);
-        mongoose.model(o.collection).remove(o.key, function (e) {
+        mongoose.model(o.collection).deleteMany(o.key, function (e,r) {
+            //console.log(r);
             o.result="OK";
             cb(e,o);
         });
@@ -325,10 +360,11 @@ function requestHandler(req,res){
     function cb(e,o){
         if(e){
             console.log(e);
-            res.send(500);
+            res.sendStatus(500);
         }
         else{
-            res.send(200,JSON.stringify(o.result, null, 2));
+            //res.send(200,JSON.stringify(o.result, null, 2));
+            res.status(200).send(JSON.stringify(o.result, null, 2));
         }
     }
 
